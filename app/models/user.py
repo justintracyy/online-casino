@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Float, Boolean
+from sqlalchemy import Column, Integer, String, Float
 from app.database import Base
 
 class User(Base):
@@ -9,4 +9,4 @@ class User(Base):
     email = Column(String, unique=True, index=True)
     hashed_password = Column(String)
     balance = Column(Float, default=0.0)
-    is_active = Column(Boolean, default=True)  
+    # Remove the is_active column
