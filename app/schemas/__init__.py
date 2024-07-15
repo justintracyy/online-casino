@@ -1,10 +1,9 @@
 from .user import User, UserCreate, UserBase
-from .game import Game, GameCreate, GameBase
 from .transaction import Transaction, TransactionCreate, TransactionBase
+from .blackjack import BlackjackGame, BlackjackResult
 
-# Export the schemas
 __all__ = [
     "User", "UserCreate", "UserBase",
-    "Game", "GameCreate", "GameBase",
-    "Transaction", "TransactionCreate", "TransactionBase"
+    "Transaction", "TransactionCreate", "TransactionBase",
+    "BlackjackGame", "BlackjackResult"
 ]
