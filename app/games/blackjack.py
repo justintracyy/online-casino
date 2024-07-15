@@ -69,7 +69,3 @@ def play_blackjack(bet_amount):
         return -bet_amount, "Dealer wins!"
     else:
         return 0, "It's a tie!"
-
-def play(bet_amount):
-    winnings, message = play_blackjack(bet_amount)
-    return round(winnings, 2), message

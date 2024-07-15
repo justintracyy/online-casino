@@ -3,7 +3,7 @@ from datetime import datetime
 
 class TransactionBase(BaseModel):
     user_id: int
-    game_id: int
+    game: str
     amount: float
 
 class TransactionCreate(TransactionBase):

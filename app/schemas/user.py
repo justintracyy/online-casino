@@ -10,7 +10,7 @@ class UserCreate(UserBase):
 class User(UserBase):
     id: int
     balance: float
-    is_active: bool
+    is_active: bool  # Make sure this line is here if you need it, or remove it if you don't
 
     class Config:
         orm_mode = True
