@@ -6,16 +6,18 @@ from typing import List
 
 router = APIRouter(prefix="/users", tags=["users"])
 
-@router.post("/", response_model=schemas.User)
+@router.post("/users/", response_model=schemas.User)
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
-    db_user = db.query(models.User).filter(models.User.username == user.username).first()
-    if db_user:
-        raise HTTPException(status_code=400, detail="Username already registered")
-    new_user = models.User(username=user.username, email=user.email, hashed_password=user.password)  # In a real app, hash the password
-    db.add(new_user)
+    db_user = models.User(
+        username=user.username,
+        email=user.email,
+        hashed_password=user.password,  # Remember to hash the password in a real application
+        # Remove any reference to is_active
+    )
+    db.add(db_user)
     db.commit()
-    db.refresh(new_user)
-    return new_user
+    db.refresh(db_user)
+    return db_user
 
 @router.get("/{user_id}", response_model=schemas.User)
 def read_user(user_id: int, db: Session = Depends(get_db)):
