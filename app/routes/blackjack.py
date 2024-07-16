@@ -6,28 +6,28 @@ from app.games import blackjack
 
 router = APIRouter(tags=["blackjack"])
 
-@router.post("/blackjack")
-def play_blackjack(user_id: int, bet_amount: float, db: Session = Depends(get_db)):
-    user = db.query(models.User).filter(models.User.id == user_id).first()
+@router.post("/blackjack", response_model=schemas.BlackjackGameState)
+def play_blackjack(game: schemas.BlackjackGame, db: Session = Depends(get_db)):
+    user = db.query(models.User).filter(models.User.id == game.user_id).first()
     if user is None:
         raise HTTPException(status_code=404, detail="User not found")
 
-    if user.balance < bet_amount:
+    if user.balance < game.bet_amount:
         raise HTTPException(status_code=400, detail="Insufficient balance")
 
-    result, message = blackjack.play_blackjack(bet_amount)
+    game_result = blackjack.simulate_blackjack(user.balance, game.bet_amount)
 
-    # Update user balance
-    user.balance += result
+    # Update user balance in the database
+    user.balance = game_result["playerBalance"]
     db.commit()
 
-    # Record transaction
-    transaction = models.Transaction(user_id=user_id, game="Blackjack", amount=result)
+    # Create a transaction record
+    transaction = models.Transaction(
+        user_id=user.id,
+        amount=game_result["payout"],  # Use the payout value
+        game="Blackjack"
+    )
     db.add(transaction)
     db.commit()
 
-    return {
-        "message": message,
-        "result": result,
-        "new_balance": user.balance
-    }
+    return game_result
